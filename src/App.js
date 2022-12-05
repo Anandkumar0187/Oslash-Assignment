@@ -1,24 +1,42 @@
-import logo from './logo.svg';
+import React, { useState ,useEffect, createContext} from 'react';
 import './App.css';
+import {Routes,Route} from 'react-router-dom';
+import {HiShare} from 'react-icons/hi'
+import ShareTab from './components/ShareTab/ShareTab';
+import AddUser from './components/addTab/AddUser';
+export const Context = createContext();
 
 function App() {
+  const [display, setDisplay] = useState("none");
+  const [user,setUser] = useState({});
+  const [set,setSet] = useState(new Set());
+  const [arr,setArr] = useState([]);
+  const showTab = ()=>{
+    if(display === "none"){
+      setDisplay("block")
+    }else{
+      setDisplay("none")
+    }
+  }
+  useEffect(()=>{
+    
+      if(set.has(user.name)||!user.name) return;
+      set.add(user.name);
+      setArr([...arr,user]);
+  
+  },[user])
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Context.Provider value={{user,setUser,arr}}>
+      <div className='main'>
+      <h2>Click on Share Button</h2>
+      <button onClick={showTab}>Share <HiShare/></button>
+      </div>
+      <Routes>
+        <Route path='/' element={<ShareTab display={display}/>}/>
+        <Route path='/add' element={<AddUser/>} />
+      </Routes>
+    </Context.Provider>
   );
 }
 
